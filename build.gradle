@@ -1,0 +1,64 @@
+plugins {
+    id 'java'
+    id 'eclipse'
+    id 'maven-publish'
+}
+
+group 'org.github.toxrink'
+version '0.0.2'
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+repositories {
+    maven {
+        url "${mavenURL}"
+        credentials {
+            username "${mavenAccount}"
+            password "${mavenPassword}"
+        }
+        allowInsecureProtocol true
+    }
+    mavenLocal()
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "$mavenPublishURL/maven-releases/"
+            def snapshotsRepoUrl = "$mavenPublishURL/maven-snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                username "${mavenAccount}"
+                password "${mavenPassword}"
+            }
+        }
+    }
+}
+
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    testCompileOnly 'org.projectlombok:lombok:1.18.8'
+	testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compile 'org.elasticsearch.client:elasticsearch-rest-client:7.10.0'
+    compile group: 'jxwrapper', name: 'jxwrapper', version: '0.10.3.2'
+    compile group:'com.alibaba' ,name:'fastjson' ,version:'1.2.8'
+    compile group:'org.slf4j' ,name:'slf4j-api' ,version:'1.7.21'
+    compile group:'org.slf4j' ,name:'slf4j-log4j12' ,version:'1.7.21'
+    compile group:'log4j' ,name:'log4j' ,version:'1.2.17'
+}
