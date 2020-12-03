@@ -1,14 +1,21 @@
 package org.github.toxrink;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Optional;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.JSONSerializer;
+import com.alibaba.fastjson.serializer.SerializeWriter;
+import com.alibaba.fastjson.serializer.SerializerFeature;
+
 import org.github.toxrink.elasticsearch.EsClientFactory;
+import org.github.toxrink.elasticsearch.constants.ClusterConst;
 import org.github.toxrink.elasticsearch.core.client.EsClient;
+import org.github.toxrink.elasticsearch.core.entry.ElasticsearchConfig;
 import org.github.toxrink.elasticsearch.core.entry.Query;
 import org.github.toxrink.elasticsearch.core.entry.Result;
 import org.github.toxrink.elasticsearch.utils.ConfigUtils;
-import org.github.toxrink.elasticsearch.core.entry.ElasticsearchConfig;
 
 import x.utils.ReflectUtils;
 
@@ -18,6 +25,20 @@ public class ClientTest {
         ElasticsearchConfig config = ConfigUtils.loadConfig(path);
         config.setPassword("vrv@12345");
         config.setUserName("admin");
+        System.out.println(JSON.toJSONString(config));
+        if (null != config) {
+            try (SerializeWriter out = new SerializeWriter(SerializerFeature.QuoteFieldNames,
+                    SerializerFeature.SkipTransientField, SerializerFeature.WriteEnumUsingName,
+                    SerializerFeature.SortField, SerializerFeature.WriteDateUseDateFormat)) {
+                JSONSerializer serializer = new JSONSerializer(out);
+                SimpleDateFormat sdf = new SimpleDateFormat(ClusterConst.UTC_FORMAT);
+                sdf.setTimeZone(ClusterConst.UTC_TIME_ZONE);
+                serializer.setDateFormat(sdf);
+                serializer.write(config);
+                System.out.println(out.toString());
+            }
+            return;
+        }
         ReflectUtils.printConfigValue(config);
         EsClient client = EsClientFactory.getEsClient(config);
         String index = "app-audit-2020.10";

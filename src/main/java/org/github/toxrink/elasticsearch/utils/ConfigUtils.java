@@ -30,6 +30,7 @@ public class ConfigUtils {
             yaml.put(ClusterConst.CLUSTER_IPS, String.join(",", tmp));
         }
         ElasticsearchConfig config = new ElasticsearchConfig();
+        config.setConfigPath(path);
         ReflectUtils.wrapObject(config).injectConfigValue(yaml);
         return config;
     }

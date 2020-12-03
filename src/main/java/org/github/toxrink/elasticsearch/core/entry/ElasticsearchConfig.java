@@ -41,4 +41,6 @@ public class ElasticsearchConfig {
 
     @ConfigValue(alias = ClusterConst.REST_REQUEST_TIMEOUT, value = ClusterConst.REST_REQUEST_TIMEOUT_DEFAULT)
     private int connectionRequestTimeout;
+
+    private String configPath;
 }

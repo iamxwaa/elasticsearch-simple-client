@@ -76,8 +76,14 @@ public class DefaultEsClientImpl extends EsClient {
 
     public DefaultEsClientImpl(ElasticsearchConfig config) {
         super(config);
-        log.info("Create rest client for cluster " + config.getClusterName());
+        log.info("Use default rest client for cluster " + config.getClusterName());
         this.restClient = buildRestClient(config);
+    }
+
+    public DefaultEsClientImpl(RestClient restClient) {
+        super(null);
+        log.info("Use {} as rest client", restClient.getClass().getName());
+        this.restClient = restClient;
     }
 
     private RestClient buildRestClient(ElasticsearchConfig config) {

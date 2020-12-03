@@ -1,5 +1,6 @@
 package org.github.toxrink.elasticsearch;
 
+import org.elasticsearch.client.RestClient;
 import org.github.toxrink.elasticsearch.core.client.EsClient;
 import org.github.toxrink.elasticsearch.core.client.impl.DefaultEsClientImpl;
 import org.github.toxrink.elasticsearch.utils.ConfigUtils;
@@ -33,6 +34,16 @@ public class EsClientFactory {
      */
     public static EsClient getEsClient(ElasticsearchConfig config) {
         return new DefaultEsClientImpl(config);
+    }
+
+    /**
+     * 获取es客户端
+     * 
+     * @param restClient es rest client
+     * @return
+     */
+    public static EsClient getEsClient(RestClient restClient) {
+        return new DefaultEsClientImpl(restClient);
     }
 
     /**
