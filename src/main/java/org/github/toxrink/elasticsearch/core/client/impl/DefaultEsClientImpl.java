@@ -187,6 +187,7 @@ public class DefaultEsClientImpl extends EsClient {
 
     @Override
     public Optional<Result> scrollSearch(Query query) {
+        Result result = null;
         if (StringUtils.isEmpty(query.getScrollId())) {
             String endpoint = "/";
             String index = String.join(",", query.getIndecies());
@@ -219,7 +220,7 @@ public class DefaultEsClientImpl extends EsClient {
             request.setJsonEntity(q);
             try {
                 Response response = restClient.performRequest(request);
-                return Optional.of(parseEntity(response.getEntity()));
+                result = parseEntity(response.getEntity());
             } catch (IOException e) {
                 log.error("Scroll search error.", e);
             }
@@ -230,12 +231,15 @@ public class DefaultEsClientImpl extends EsClient {
             request.setJsonEntity("{\"scroll_id\":\"" + id + "\",\"scroll\":\"" + time + "\"}");
             try {
                 Response response = restClient.performRequest(request);
-                return Optional.ofNullable(parseEntity(response.getEntity()));
+                result = parseEntity(response.getEntity());
             } catch (IOException e) {
                 log.error("Next scroll search error.", e);
             }
         }
-        return Optional.empty();
+        if (null != result) {
+            query.setScrollId(result.getScrollId());
+        }
+        return Optional.ofNullable(result);
     }
 
     private Result parseEntity(HttpEntity httpEntity) throws IOException {

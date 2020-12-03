@@ -92,7 +92,9 @@ public abstract class EsClient implements SearchClient, DocClient, IndexClient, 
      * 对象转JSON
      */
     protected String toJSONString(Object object) {
-        try (SerializeWriter out = new SerializeWriter(SerializerFeature.WriteDateUseDateFormat)) {
+        try (SerializeWriter out = new SerializeWriter(SerializerFeature.QuoteFieldNames,
+                SerializerFeature.SkipTransientField, SerializerFeature.WriteEnumUsingName, SerializerFeature.SortField,
+                SerializerFeature.WriteDateUseDateFormat)) {
             JSONSerializer serializer = new JSONSerializer(out);
             SimpleDateFormat sdf = new SimpleDateFormat(ClusterConst.UTC_FORMAT);
             sdf.setTimeZone(ClusterConst.UTC_TIME_ZONE);
