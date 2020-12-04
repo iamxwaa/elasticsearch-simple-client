@@ -60,7 +60,7 @@ public abstract class EsClient implements SearchClient, DocClient, IndexClient, 
     /**
      * 缓存查询情况
      * 
-     * @param index
+     * @param index 索引名称
      * @return
      */
     public boolean isIndexExistCache(String index) {
@@ -75,9 +75,9 @@ public abstract class EsClient implements SearchClient, DocClient, IndexClient, 
     }
 
     /**
-     * 获取第一个mapping
+     * 获取第一个索引模板配置
      * 
-     * @param index
+     * @param index 索引名称
      * @return
      */
     public Optional<Mapping> getMapping(String index) {
@@ -89,7 +89,10 @@ public abstract class EsClient implements SearchClient, DocClient, IndexClient, 
     }
 
     /**
-     * 对象转JSON
+     * 写入es的数据转为json字符串
+     * 
+     * @param object 数据
+     * @return
      */
     protected String toJSONString(Object object) {
         try (SerializeWriter out = new SerializeWriter(SerializerFeature.QuoteFieldNames,

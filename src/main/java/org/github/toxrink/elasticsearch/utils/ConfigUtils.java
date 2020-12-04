@@ -11,10 +11,10 @@ import x.yaml.YamlWrapper;
 
 public class ConfigUtils {
 
-    public static void main(String[] args) {
-        String path = "D:\\Downloads\\elasticsearch-5.5.3\\config\\elasticsearch.yml";
-        System.out.println(loadConfig(path));
-    }
+    // public static void main(String[] args) {
+    //     String path = "D:\\Downloads\\elasticsearch-5.5.3\\config\\elasticsearch.yml";
+    //     System.out.println(loadConfig(path));
+    // }
 
     /**
      * 读取elasticsearch.yml

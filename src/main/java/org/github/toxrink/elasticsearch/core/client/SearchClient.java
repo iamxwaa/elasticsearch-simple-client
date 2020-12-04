@@ -17,7 +17,7 @@ public interface SearchClient {
     /**
      * es 查询
      * 
-     * @param query 查询参数
+     * @param query 查询语句
      * @return
      */
     Optional<Result> search(Query query);
@@ -25,7 +25,7 @@ public interface SearchClient {
     /**
      * es scroll 查询
      * 
-     * @param query 查询参数
+     * @param query 查询语句
      * @return
      */
     Optional<Result> scrollSearch(Query query);

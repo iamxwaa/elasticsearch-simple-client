@@ -13,18 +13,18 @@ import org.github.toxrink.elasticsearch.core.entry.Mapping;
  */
 public interface IndexClient {
     /**
-     * 获取索引schema
+     * 获取索引模板配置
      * 
-     * @param index
-     * @return
+     * @param index 目标索引
+     * @return 模板配置
      */
     List<Mapping> getMappings(String index);
 
     /**
      * 判断索引是否存在
      * 
-     * @param index
-     * @return
+     * @param index 目标索引
+     * @return 是否存在
      */
     boolean isIndexExist(String index);
 }

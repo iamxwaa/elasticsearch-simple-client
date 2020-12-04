@@ -64,32 +64,32 @@ public interface DocClient {
     /**
      * 删除es中的数据
      * 
-     * @param index
-     * @param type
-     * @param id
-     * @return
+     * @param index 索引
+     * @param type  类型
+     * @param id    id
+     * @return 是否删除成功
      */
     boolean delete(String index, String type, String id);
 
     /**
      * 修改es中的数据
      * 
-     * @param index
-     * @param type
-     * @param id
-     * @param field
-     * @param content
-     * @return
+     * @param index   索引
+     * @param type    类型
+     * @param id      id
+     * @param field   字段
+     * @param content 修改内容
+     * @return 是否修改成功
      */
     boolean update(String index, String type, String id, Map<String, Object> source);
 
     /**
      * 新增数据到es
      * 
-     * @param index
-     * @param type
-     * @param data
-     * @return
+     * @param index 索引
+     * @param type  类型
+     * @param data  数据
+     * @return 是否添加成功
      */
     boolean put(String index, String type, Map<String, Object> source);
 

@@ -260,7 +260,10 @@ public class DefaultEsClientImpl extends EsClient {
         } else {
             JSONArray hits = hitObj.getJSONArray("hits");
             result.setEmpty(hits.isEmpty());
-            if (!hits.isEmpty()) {
+            if (hits.isEmpty()) {
+                result.setTotal(0);
+                result.setHits(new SearchHit[0]);
+            } else {
                 result.setTotal(hitObj.getLongValue("total"));
                 result.setHits(hits.parallelStream().map(hit -> {
                     JSONObject hit2 = (JSONObject) hit;
@@ -272,9 +275,6 @@ public class DefaultEsClientImpl extends EsClient {
                     searchHit.setSource(hit2.getJSONObject("_source"));
                     return searchHit;
                 }).toArray(SearchHit[]::new));
-            } else {
-                result.setTotal(0);
-                result.setHits(new SearchHit[0]);
             }
         }
         return result;

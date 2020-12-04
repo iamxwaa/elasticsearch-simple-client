@@ -25,20 +25,6 @@ public class ClientTest {
         ElasticsearchConfig config = ConfigUtils.loadConfig(path);
         config.setPassword("vrv@12345");
         config.setUserName("admin");
-        System.out.println(JSON.toJSONString(config));
-        if (null != config) {
-            try (SerializeWriter out = new SerializeWriter(SerializerFeature.QuoteFieldNames,
-                    SerializerFeature.SkipTransientField, SerializerFeature.WriteEnumUsingName,
-                    SerializerFeature.SortField, SerializerFeature.WriteDateUseDateFormat)) {
-                JSONSerializer serializer = new JSONSerializer(out);
-                SimpleDateFormat sdf = new SimpleDateFormat(ClusterConst.UTC_FORMAT);
-                sdf.setTimeZone(ClusterConst.UTC_TIME_ZONE);
-                serializer.setDateFormat(sdf);
-                serializer.write(config);
-                System.out.println(out.toString());
-            }
-            return;
-        }
         ReflectUtils.printConfigValue(config);
         EsClient client = EsClientFactory.getEsClient(config);
         String index = "app-audit-2020.10";
