@@ -281,11 +281,15 @@ public class DefaultEsClientImpl extends EsClient {
     }
 
     @Override
-    public synchronized int addBatch(String index, String type, Map<String, Object> source) {
+    public synchronized int addBatch(String index, String type, String id, Map<String, Object> source) {
         dataBuffer.append("{\"index\":{\"_index\":\"");
         dataBuffer.append(index);
         dataBuffer.append("\",\"_type\":\"");
         dataBuffer.append(type);
+        if (null != id) {
+            dataBuffer.append("\",\"_id\":\"");
+            dataBuffer.append(id);
+        }
         dataBuffer.append("\"}}");
         dataBuffer.append("\n");
         dataBuffer.append(toJSONString(source));

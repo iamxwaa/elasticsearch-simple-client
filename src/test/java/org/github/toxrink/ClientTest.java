@@ -2,6 +2,9 @@ package org.github.toxrink;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.alibaba.fastjson.JSON;
@@ -39,6 +42,17 @@ public class ClientTest {
         if (rOptional.isPresent()) {
             System.out.println(rOptional);
         }
+        client.newBatch();
+        index = "hahatest";
+        String type = "logs";
+        Map<String, Object> source = new HashMap<>();
+        Date t = new Date();
+        String id = t.getTime() + "";
+        source.put("msg", "21djfksdflj");
+        source.put("time", t);
+        client.addBatch(index, type, id, source);
+        client.addBatch(index, type, null, source);
+        client.executeLastBatch();
         client.close();
     }
 }

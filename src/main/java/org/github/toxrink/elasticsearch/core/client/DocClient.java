@@ -15,10 +15,11 @@ public interface DocClient {
      * 
      * @param index  索引名称
      * @param type   类型
+     * @param id     数据主键，为null时自动生成
      * @param source 数据
-     * @return
+     * @return 当前添加的数据条数
      */
-    int addBatch(String index, String type, Map<String, Object> source);
+    int addBatch(String index, String type, String id, Map<String, Object> source);
 
     /**
      * 新建一个es的bulk request,实现时建议添加synchronized

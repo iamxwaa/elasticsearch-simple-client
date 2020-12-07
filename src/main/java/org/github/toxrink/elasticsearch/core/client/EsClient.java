@@ -123,4 +123,16 @@ public abstract class EsClient implements SearchClient, DocClient, IndexClient, 
     public Map<String, Object> buildSource(SearchHit hit) {
         return hit.getSource();
     }
+
+    /**
+     * 添加数据到bulk request,id自动生成
+     * 
+     * @param index  索引
+     * @param type   类型
+     * @param source 数据
+     * @return 当前添加的数据条数
+     */
+    public int addBatch(String index, String type, Map<String, Object> source) {
+        return addBatch(index, type, null, source);
+    }
 }
