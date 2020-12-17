@@ -174,7 +174,7 @@ public class DefaultEsClientImpl extends EsClient {
         paramSource.put("batched_reduce_size", "512");
 
         Request request = new Request(POST, endpoint);
-        request.addParameters(paramSource);
+        paramSource.forEach(request::addParameter);
 
         StringBuilder sb1 = new StringBuilder().append("\"from\":").append(query.getFrom()).append(",")
                 .append("\"size\":").append(query.getSize());
@@ -217,7 +217,7 @@ public class DefaultEsClientImpl extends EsClient {
             paramSource.put("batched_reduce_size", "512");
 
             Request request = new Request(POST, endpoint);
-            request.addParameters(paramSource);
+            paramSource.forEach(request::addParameter);
 
             StringBuilder sb1 = new StringBuilder().append("\"from\":").append(query.getFrom()).append(",")
                     .append("\"size\":").append(query.getSize());
