@@ -53,6 +53,7 @@ public class ClientTest {
         client.addBatch(index, type, id, source);
         client.addBatch(index, type, null, source);
         client.executeLastBatch();
+        client.delete(index, type, "1608273072662");
         client.close();
     }
 }

@@ -3,8 +3,10 @@ package org.github.toxrink.elasticsearch.core.entry;
 import java.util.Map;
 
 import lombok.Data;
+import lombok.ToString;
 
 @Data
+@ToString
 public class SearchHit {
     private String index;
     private String type;

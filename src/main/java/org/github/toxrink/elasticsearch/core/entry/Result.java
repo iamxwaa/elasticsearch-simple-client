@@ -1,6 +1,7 @@
 package org.github.toxrink.elasticsearch.core.entry;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 查询结果
@@ -10,6 +11,7 @@ import lombok.Data;
  *         2020年12月02日
  */
 @Data
+@ToString
 public class Result {
     /**
      * 查询结果条数
@@ -40,11 +42,4 @@ public class Result {
      * 耗时
      */
     private long took;
-
-    @Override
-    public String toString() {
-        return "Result [empty=" + empty + ", hits= {...}, scrollId=" + scrollId + ", timeOut=" + timeOut + ", took="
-                + took + ", total=" + total + "]";
-    }
-
 }

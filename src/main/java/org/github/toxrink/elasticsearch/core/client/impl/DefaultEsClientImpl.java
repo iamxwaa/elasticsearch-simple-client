@@ -74,6 +74,8 @@ public class DefaultEsClientImpl extends EsClient {
 
     private ReentrantLock lock = new ReentrantLock();
 
+    public static String DEFAULT_TIME_VALUE = "600s";
+
     public DefaultEsClientImpl(ElasticsearchConfig config) {
         super(config);
         log.info("Use default rest client for cluster " + config.getClusterName());
@@ -153,35 +155,18 @@ public class DefaultEsClientImpl extends EsClient {
         if (query.getTimeValue() != 0 || StringUtils.isNotBlank(query.getScrollId())) {
             return scrollSearch(query);
         }
-        String endpoint = "/";
-        String index = String.join(",", query.getIndecies());
-        String type = (null == query.getTypes() || query.getTypes().length == 0) ? ""
-                : String.join(",", query.getTypes());
-
-        if (StringUtils.isEmpty(type)) {
-            endpoint += index;
-        } else {
-            endpoint += index + "/" + type;
-        }
-        endpoint += "/_search";
-
-        Map<String, String> paramSource = new HashMap<>();
-        paramSource.put("typed_keys", "true");
-        paramSource.put("ignore_unavailable", "false");
-        paramSource.put("expand_wildcards", "open");
-        paramSource.put("allow_no_indices", "true");
-        paramSource.put("search_type", "query_then_fetch");
-        paramSource.put("batched_reduce_size", "512");
-
+        String endpoint = getQueryEndpoint(query);
         Request request = new Request(POST, endpoint);
-        paramSource.forEach(request::addParameter);
+        setDefaultParameter(request);
 
-        StringBuilder sb1 = new StringBuilder().append("\"from\":").append(query.getFrom()).append(",")
+        StringBuilder queryBuilder = new StringBuilder().append("\"from\":").append(query.getFrom()).append(",")
                 .append("\"size\":").append(query.getSize());
-        String q = StringUtils.isEmpty(query.getQuery()) ? "{" + sb1.toString() + "}"
-                : new StringBuilder(query.getQuery()).insert(1, sb1.append(",")).toString();
 
-        request.setJsonEntity(q);
+        String queryString = StringUtils.isEmpty(query.getQuery())
+                ? new StringBuilder("{").append(queryBuilder).append("}").toString()
+                : new StringBuilder(query.getQuery()).insert(1, queryBuilder.append(",")).toString();
+
+        request.setJsonEntity(queryString);
         try {
             Response response = restClient.performRequest(request);
             return Optional.ofNullable(parseEntity(response.getEntity()));
@@ -195,35 +180,19 @@ public class DefaultEsClientImpl extends EsClient {
     public Optional<Result> scrollSearch(Query query) {
         Result result = null;
         if (StringUtils.isEmpty(query.getScrollId())) {
-            String endpoint = "/";
-            String index = String.join(",", query.getIndecies());
-            String type = (null == query.getTypes() || query.getTypes().length == 0) ? ""
-                    : String.join(",", query.getTypes());
-
-            if (StringUtils.isEmpty(type)) {
-                endpoint += index;
-            } else {
-                endpoint += index + "/" + type;
-            }
-            endpoint += "/_search";
-
-            Map<String, String> paramSource = new HashMap<>();
-            paramSource.put("typed_keys", "true");
-            paramSource.put("ignore_unavailable", "false");
-            paramSource.put("expand_wildcards", "open");
-            paramSource.put("allow_no_indices", "true");
-            paramSource.put("scroll", query.getTimeValue() == 0 ? "600s" : query.getTimeValue() + "s");
-            paramSource.put("search_type", "query_then_fetch");
-            paramSource.put("batched_reduce_size", "512");
-
+            String endpoint = getQueryEndpoint(query);
             Request request = new Request(POST, endpoint);
-            paramSource.forEach(request::addParameter);
+            setDefaultParameter(request);
+            request.addParameter("scroll", query.getTimeValue() == 0 ? DEFAULT_TIME_VALUE : query.getTimeValue() + "s");
 
-            StringBuilder sb1 = new StringBuilder().append("\"from\":").append(query.getFrom()).append(",")
+            StringBuilder queryBuilder = new StringBuilder().append("\"from\":").append(query.getFrom()).append(",")
                     .append("\"size\":").append(query.getSize());
-            String q = StringUtils.isEmpty(query.getQuery()) ? "{" + sb1.toString() + "}"
-                    : new StringBuilder(query.getQuery()).insert(1, sb1.append(",")).toString();
-            request.setJsonEntity(q);
+
+            String queryString = StringUtils.isEmpty(query.getQuery())
+                    ? new StringBuilder("{").append(queryBuilder).append("}").toString()
+                    : new StringBuilder(query.getQuery()).insert(1, queryBuilder.append(",")).toString();
+
+            request.setJsonEntity(queryString);
             try {
                 Response response = restClient.performRequest(request);
                 result = parseEntity(response.getEntity());
@@ -232,9 +201,10 @@ public class DefaultEsClientImpl extends EsClient {
             }
         } else {
             Request request = new Request(POST, "/_search/scroll");
-            String time = query.getTimeValue() == 0 ? "600s" : query.getTimeValue() + "s";
+            String time = query.getTimeValue() == 0 ? DEFAULT_TIME_VALUE : query.getTimeValue() + "s";
             String id = query.getScrollId();
-            request.setJsonEntity("{\"scroll_id\":\"" + id + "\",\"scroll\":\"" + time + "\"}");
+            request.setJsonEntity(new StringBuilder("{\"scroll_id\":\"").append(id).append("\",\"scroll\":\"")
+                    .append(time).append("\"}").toString());
             try {
                 Response response = restClient.performRequest(request);
                 result = parseEntity(response.getEntity());
@@ -246,6 +216,30 @@ public class DefaultEsClientImpl extends EsClient {
             query.setScrollId(result.getScrollId());
         }
         return Optional.ofNullable(result);
+    }
+
+    private String getQueryEndpoint(Query query) {
+        StringBuilder endpoint = new StringBuilder("/");
+        String index = String.join(",", query.getIndecies());
+        String type = (null == query.getTypes() || query.getTypes().length == 0) ? ""
+                : String.join(",", query.getTypes());
+
+        if (StringUtils.isEmpty(type)) {
+            endpoint.append(index);
+        } else {
+            endpoint.append(index).append("/").append(type);
+        }
+        endpoint.append("/_search");
+        return endpoint.toString();
+    }
+
+    private void setDefaultParameter(Request request) {
+        request.addParameter("typed_keys", "true");
+        request.addParameter("ignore_unavailable", "false");
+        request.addParameter("expand_wildcards", "open");
+        request.addParameter("allow_no_indices", "true");
+        request.addParameter("search_type", "query_then_fetch");
+        request.addParameter("batched_reduce_size", "512");
     }
 
     private Result parseEntity(HttpEntity httpEntity) throws IOException {
@@ -330,7 +324,7 @@ public class DefaultEsClientImpl extends EsClient {
     public boolean delete(String index, String type, String id) {
         Response response = null;
         try {
-            response = restClient.performRequest(getRequest(DELETE, "/" + index + "/" + type + "/" + id));
+            response = restClient.performRequest(buildRequest(DELETE, "/" + index + "/" + type + "/" + id));
             if (log.isDebugEnabled()) {
                 log.debug("Delete response entity is : " + EntityUtils.toString(response.getEntity()));
             }
@@ -347,7 +341,7 @@ public class DefaultEsClientImpl extends EsClient {
         HttpEntity entity = new NStringEntity(jsonString, ContentType.APPLICATION_JSON);
         Response response = null;
         try {
-            response = restClient.performRequest(getRequest(POST, "/" + index + "/" + type + "/" + id, entity));
+            response = restClient.performRequest(buildRequest(POST, "/" + index + "/" + type + "/" + id, entity));
             if (log.isDebugEnabled()) {
                 log.debug("Update response entity is : " + EntityUtils.toString(response.getEntity()));
             }
@@ -364,7 +358,7 @@ public class DefaultEsClientImpl extends EsClient {
         HttpEntity entity = new NStringEntity(jsonString, ContentType.APPLICATION_JSON);
         Response response = null;
         try {
-            response = restClient.performRequest(getRequest(PUT, "/" + index + "/" + type, entity));
+            response = restClient.performRequest(buildRequest(PUT, "/" + index + "/" + type, entity));
             if (log.isDebugEnabled()) {
                 log.debug("Put response entity is : " + EntityUtils.toString(response.getEntity()));
             }
@@ -379,7 +373,7 @@ public class DefaultEsClientImpl extends EsClient {
     public List<Mapping> getMappings(String index) {
         List<Mapping> list = new ArrayList<>(1);
         try {
-            Response resp = restClient.performRequest(getRequest(GET, "/" + index + "/_mappings"));
+            Response resp = restClient.performRequest(buildRequest(GET, "/" + index + "/_mappings"));
             Map<String, Map<String, Object>> map = JSON.parseObject(IOUtils.toByteArray(resp.getEntity().getContent()),
                     LinkedHashMap.class);
             map.forEach((k, v) -> {
@@ -405,7 +399,7 @@ public class DefaultEsClientImpl extends EsClient {
     public boolean isIndexExist(String index) {
         Response response = null;
         try {
-            response = restClient.performRequest(getRequest(HEAD, "/" + index));
+            response = restClient.performRequest(buildRequest(HEAD, "/" + index));
             if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
                 if (log.isDebugEnabled()) {
                     log.debug("Check index successful,index is exist : " + index);
@@ -433,7 +427,7 @@ public class DefaultEsClientImpl extends EsClient {
         StringEntity entity = new StringEntity(bufferData.toString(), ContentType.APPLICATION_JSON);
         Response response = null;
         try {
-            response = restClient.performRequest(getRequest(PUT, "/_bulk", entity));
+            response = restClient.performRequest(buildRequest(PUT, "/_bulk", entity));
             if (log.isDebugEnabled()) {
                 log.debug("Bulk response entity is : " + EntityUtils.toString(response.getEntity()));
             }
@@ -442,11 +436,11 @@ public class DefaultEsClientImpl extends EsClient {
         }
     }
 
-    private Request getRequest(String method, String endpoint) {
-        return getRequest(method, endpoint, null);
+    private Request buildRequest(String method, String endpoint) {
+        return buildRequest(method, endpoint, null);
     }
 
-    private Request getRequest(String method, String endpoint, HttpEntity entity) {
+    private Request buildRequest(String method, String endpoint, HttpEntity entity) {
         Request request = new Request(method, endpoint);
         if (null != entity) {
             request.setEntity(entity);
