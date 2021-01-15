@@ -280,7 +280,7 @@ public class DefaultEsClientImpl extends EsClient {
         dataBuffer.append(index);
         dataBuffer.append("\",\"_type\":\"");
         dataBuffer.append(type);
-        if (null != id) {
+        if (StringUtils.isNotEmpty(id)) {
             dataBuffer.append("\",\"_id\":\"");
             dataBuffer.append(id);
         }
@@ -324,7 +324,8 @@ public class DefaultEsClientImpl extends EsClient {
     public boolean delete(String index, String type, String id) {
         Response response = null;
         try {
-            response = restClient.performRequest(buildRequest(DELETE, "/" + index + "/" + type + "/" + id));
+            response = restClient.performRequest(buildRequest(DELETE,
+                    new StringBuilder("/").append(index).append("/").append(type).append("/").append(id).toString()));
             if (log.isDebugEnabled()) {
                 log.debug("Delete response entity is : " + EntityUtils.toString(response.getEntity()));
             }
@@ -341,7 +342,9 @@ public class DefaultEsClientImpl extends EsClient {
         HttpEntity entity = new NStringEntity(jsonString, ContentType.APPLICATION_JSON);
         Response response = null;
         try {
-            response = restClient.performRequest(buildRequest(POST, "/" + index + "/" + type + "/" + id, entity));
+            response = restClient.performRequest(buildRequest(POST,
+                    new StringBuilder("/").append(index).append("/").append(type).append("/").append(id).toString(),
+                    entity));
             if (log.isDebugEnabled()) {
                 log.debug("Update response entity is : " + EntityUtils.toString(response.getEntity()));
             }
@@ -358,7 +361,8 @@ public class DefaultEsClientImpl extends EsClient {
         HttpEntity entity = new NStringEntity(jsonString, ContentType.APPLICATION_JSON);
         Response response = null;
         try {
-            response = restClient.performRequest(buildRequest(PUT, "/" + index + "/" + type, entity));
+            response = restClient.performRequest(buildRequest(PUT,
+                    new StringBuilder("/").append(index).append("/").append(type).toString(), entity));
             if (log.isDebugEnabled()) {
                 log.debug("Put response entity is : " + EntityUtils.toString(response.getEntity()));
             }
@@ -373,7 +377,8 @@ public class DefaultEsClientImpl extends EsClient {
     public List<Mapping> getMappings(String index) {
         List<Mapping> list = new ArrayList<>(1);
         try {
-            Response resp = restClient.performRequest(buildRequest(GET, "/" + index + "/_mappings"));
+            Response resp = restClient.performRequest(
+                    buildRequest(GET, new StringBuilder("/").append(index).append("/_mappings").toString()));
             Map<String, Map<String, Object>> map = JSON.parseObject(IOUtils.toByteArray(resp.getEntity().getContent()),
                     LinkedHashMap.class);
             map.forEach((k, v) -> {
