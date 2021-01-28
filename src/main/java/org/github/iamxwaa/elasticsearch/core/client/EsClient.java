@@ -1,4 +1,4 @@
-package org.github.toxrink.elasticsearch.core.client;
+package org.github.iamxwaa.elasticsearch.core.client;
 
 import java.io.Closeable;
 import java.text.SimpleDateFormat;
@@ -12,10 +12,10 @@ import com.alibaba.fastjson.serializer.JSONSerializer;
 import com.alibaba.fastjson.serializer.SerializeWriter;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 
-import org.github.toxrink.elasticsearch.constants.ClusterConst;
-import org.github.toxrink.elasticsearch.core.entry.Mapping;
-import org.github.toxrink.elasticsearch.core.entry.SearchHit;
-import org.github.toxrink.elasticsearch.core.entry.ElasticsearchConfig;
+import org.github.iamxwaa.elasticsearch.constants.ClusterConst;
+import org.github.iamxwaa.elasticsearch.core.entry.Mapping;
+import org.github.iamxwaa.elasticsearch.core.entry.SearchHit;
+import org.github.iamxwaa.elasticsearch.core.entry.ElasticsearchConfig;
 
 /**
  * 抽象的es客户端

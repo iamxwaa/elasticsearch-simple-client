@@ -1,8 +1,8 @@
-package org.github.toxrink.elasticsearch.core.client;
+package org.github.iamxwaa.elasticsearch.core.client;
 
 import java.util.List;
 
-import org.github.toxrink.elasticsearch.core.entry.Mapping;
+import org.github.iamxwaa.elasticsearch.core.entry.Mapping;
 
 /**
  * 索引相关

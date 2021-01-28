@@ -1,10 +1,10 @@
-package org.github.toxrink.elasticsearch;
+package org.github.iamxwaa.elasticsearch;
 
 import org.elasticsearch.client.RestClient;
-import org.github.toxrink.elasticsearch.core.client.EsClient;
-import org.github.toxrink.elasticsearch.core.client.impl.DefaultEsClientImpl;
-import org.github.toxrink.elasticsearch.utils.ConfigUtils;
-import org.github.toxrink.elasticsearch.core.entry.ElasticsearchConfig;
+import org.github.iamxwaa.elasticsearch.core.client.EsClient;
+import org.github.iamxwaa.elasticsearch.core.client.impl.DefaultEsClientImpl;
+import org.github.iamxwaa.elasticsearch.utils.ConfigUtils;
+import org.github.iamxwaa.elasticsearch.core.entry.ElasticsearchConfig;
 
 /**
  * 获取es连接客户端

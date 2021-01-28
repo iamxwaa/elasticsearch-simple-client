@@ -1,4 +1,4 @@
-package org.github.toxrink.elasticsearch.core.client.impl;
+package org.github.iamxwaa.elasticsearch.core.client.impl;
 
 import java.io.IOException;
 import java.security.KeyManagementException;
@@ -47,12 +47,12 @@ import org.elasticsearch.client.Request;
 import org.elasticsearch.client.Response;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import org.github.toxrink.elasticsearch.core.client.EsClient;
-import org.github.toxrink.elasticsearch.core.entry.ElasticsearchConfig;
-import org.github.toxrink.elasticsearch.core.entry.Mapping;
-import org.github.toxrink.elasticsearch.core.entry.Query;
-import org.github.toxrink.elasticsearch.core.entry.Result;
-import org.github.toxrink.elasticsearch.core.entry.SearchHit;
+import org.github.iamxwaa.elasticsearch.core.client.EsClient;
+import org.github.iamxwaa.elasticsearch.core.entry.ElasticsearchConfig;
+import org.github.iamxwaa.elasticsearch.core.entry.Mapping;
+import org.github.iamxwaa.elasticsearch.core.entry.Query;
+import org.github.iamxwaa.elasticsearch.core.entry.Result;
+import org.github.iamxwaa.elasticsearch.core.entry.SearchHit;
 
 import lombok.extern.slf4j.Slf4j;
 

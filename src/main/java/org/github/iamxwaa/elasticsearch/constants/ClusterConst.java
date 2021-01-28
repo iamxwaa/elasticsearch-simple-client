@@ -1,4 +1,4 @@
-package org.github.toxrink.elasticsearch.constants;
+package org.github.iamxwaa.elasticsearch.constants;
 
 import java.util.TimeZone;
 

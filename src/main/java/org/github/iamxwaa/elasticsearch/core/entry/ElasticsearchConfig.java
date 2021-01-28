@@ -1,6 +1,6 @@
-package org.github.toxrink.elasticsearch.core.entry;
+package org.github.iamxwaa.elasticsearch.core.entry;
 
-import org.github.toxrink.elasticsearch.constants.ClusterConst;
+import org.github.iamxwaa.elasticsearch.constants.ClusterConst;
 
 import lombok.Data;
 import lombok.ToString;

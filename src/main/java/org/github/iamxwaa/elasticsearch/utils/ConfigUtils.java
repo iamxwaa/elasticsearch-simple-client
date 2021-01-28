@@ -1,10 +1,10 @@
-package org.github.toxrink.elasticsearch.utils;
+package org.github.iamxwaa.elasticsearch.utils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-import org.github.toxrink.elasticsearch.constants.ClusterConst;
-import org.github.toxrink.elasticsearch.core.entry.ElasticsearchConfig;
+import org.github.iamxwaa.elasticsearch.constants.ClusterConst;
+import org.github.iamxwaa.elasticsearch.core.entry.ElasticsearchConfig;
 
 import x.utils.ReflectUtils;
 import x.yaml.YamlWrapper;

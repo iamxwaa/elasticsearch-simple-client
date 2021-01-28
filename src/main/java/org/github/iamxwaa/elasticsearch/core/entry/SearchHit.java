@@ -1,4 +1,4 @@
-package org.github.toxrink.elasticsearch.core.entry;
+package org.github.iamxwaa.elasticsearch.core.entry;
 
 import java.util.Map;
 

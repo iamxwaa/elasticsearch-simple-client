@@ -4,7 +4,7 @@ plugins {
     id 'maven-publish'
 }
 
-group 'org.github.toxrink'
+group 'org.github.iamxwaa'
 version '0.1.4'
 
 sourceCompatibility = '1.8'

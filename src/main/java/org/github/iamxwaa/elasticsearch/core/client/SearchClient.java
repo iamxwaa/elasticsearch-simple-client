@@ -1,9 +1,9 @@
-package org.github.toxrink.elasticsearch.core.client;
+package org.github.iamxwaa.elasticsearch.core.client;
 
 import java.util.Optional;
 
-import org.github.toxrink.elasticsearch.core.entry.Query;
-import org.github.toxrink.elasticsearch.core.entry.Result;
+import org.github.iamxwaa.elasticsearch.core.entry.Query;
+import org.github.iamxwaa.elasticsearch.core.entry.Result;
 
 /**
  * 查询操作
