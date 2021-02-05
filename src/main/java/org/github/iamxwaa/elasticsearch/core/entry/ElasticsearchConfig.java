@@ -1,10 +1,10 @@
 package org.github.iamxwaa.elasticsearch.core.entry;
 
 import org.github.iamxwaa.elasticsearch.constants.ClusterConst;
+import org.github.iamxwaa.jxwrapper2.bean.ConfigValue;
 
 import lombok.Data;
 import lombok.ToString;
-import x.common.annotation.ConfigValue;
 
 @Data
 @ToString

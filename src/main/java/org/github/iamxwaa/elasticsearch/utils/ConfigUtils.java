@@ -1,20 +1,21 @@
 package org.github.iamxwaa.elasticsearch.utils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.List;
 
 import org.github.iamxwaa.elasticsearch.constants.ClusterConst;
 import org.github.iamxwaa.elasticsearch.core.entry.ElasticsearchConfig;
-
-import x.utils.ReflectUtils;
-import x.yaml.YamlWrapper;
+import org.github.iamxwaa.jxwrapper2.bean.BeanBuilders;
+import org.github.iamxwaa.jxwrapper2.yaml.YamlBuilders;
+import org.github.iamxwaa.jxwrapper2.yaml.YamlEntry;
 
 public class ConfigUtils {
 
-    // public static void main(String[] args) {
-    //     String path = "D:\\Downloads\\elasticsearch-5.5.3\\config\\elasticsearch.yml";
-    //     System.out.println(loadConfig(path));
-    // }
+    public static void main(String[] args) {
+        String path = "D:\\Downloads\\elasticsearch-5.5.3\\config\\elasticsearch.yml";
+        long start = System.currentTimeMillis();
+        System.out.println(loadConfig(path));
+        System.out.println(System.currentTimeMillis() - start);
+    }
 
     /**
      * 读取elasticsearch.yml
@@ -23,15 +24,14 @@ public class ConfigUtils {
      * @return
      */
     public static ElasticsearchConfig loadConfig(String path) {
-        LinkedHashMap<String, Object> yaml = YamlWrapper.loadYamlAsLinkedHashMap(path);
-        @SuppressWarnings("unchecked")
-        ArrayList<String> tmp = (ArrayList<String>) yaml.get(ClusterConst.CLUSTER_IPS);
+        YamlEntry yamlEntry = YamlBuilders.builder().path(path).build();
+        List<String> tmp = yamlEntry.getStringList(ClusterConst.CLUSTER_IPS);
         if (null != tmp) {
-            yaml.put(ClusterConst.CLUSTER_IPS, String.join(",", tmp));
+            yamlEntry.originYaml().put(ClusterConst.CLUSTER_IPS, String.join(",", tmp));
         }
         ElasticsearchConfig config = new ElasticsearchConfig();
         config.setConfigPath(path);
-        ReflectUtils.wrapObject(config).injectConfigValue(yaml);
+        BeanBuilders.buildSetter(config).build().injectConfigValue(yamlEntry.originYaml());
         return config;
     }
 }
