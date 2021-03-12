@@ -18,7 +18,7 @@ public class ElasticsearchConfig {
     @ConfigValue(alias = ClusterConst.MASTER_IP)
     private String master;
 
-    @ConfigValue(alias = ClusterConst.PORT)
+    @ConfigValue(alias = ClusterConst.PORT, value = ClusterConst.PORT_DEFAULT)
     private int port;
 
     @ConfigValue(alias = ClusterConst.ITOOLS_SECURITY_SSLONLY)

@@ -48,6 +48,10 @@ public interface ClusterConst {
      * 连接端口
      */
     public static final String PORT = "http.port";
+    /**
+     * 默认端口
+     */
+    public static final String PORT_DEFAULT = "9200";
 
     /**
      * true => https or false => http
@@ -68,11 +72,6 @@ public interface ClusterConst {
      * 认证密码
      */
     public static final String PASSWORD = "itools.security.basic.password";
-
-    /**
-     * 默认端口
-     */
-    public static final String PORT_DEFAULT = "9200";
 
     public static final String REST_REQUEST_TIMEOUT = "rest.connection.request.timeout";
     public static final String REST_REQUEST_TIMEOUT_DEFAULT = "30000";
