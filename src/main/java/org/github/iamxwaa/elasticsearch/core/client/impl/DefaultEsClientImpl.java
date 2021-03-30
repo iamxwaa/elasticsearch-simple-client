@@ -431,6 +431,65 @@ public class DefaultEsClientImpl extends EsClient {
         return false;
     }
 
+    /**
+     * 创建一个4分片1副本的索引
+     * 
+     * @param index 索引名称
+     * @return
+     */
+    public boolean createIndex(String index) {
+        return createIndex(index, 4, 1);
+    }
+
+    @Override
+    public boolean createIndex(String index, int shards, int replicas) {
+        Response response = null;
+        try {
+            String setting = "{\"settings\" : {\"index\" : {\"number_of_shards\" : " + shards
+                    + ", \"number_of_replicas\" : " + replicas + " }}}";
+            StringEntity entity = new StringEntity(setting, ContentType.APPLICATION_JSON);
+            response = restClient.performRequest(buildRequest(PUT, "/" + index, entity));
+            if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Create index successful : " + index);
+                }
+                return true;
+            }
+            if (HttpStatus.SC_NOT_FOUND == response.getStatusLine().getStatusCode()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Create index fail : " + index);
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("Create index fail, exception occurred.", e);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean deleteIndex(String index) {
+        Response response = null;
+        try {
+            response = restClient.performRequest(buildRequest(DELETE, "/" + index));
+            if (HttpStatus.SC_OK == response.getStatusLine().getStatusCode()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Delete index successful : " + index);
+                }
+                return true;
+            }
+            if (HttpStatus.SC_NOT_FOUND == response.getStatusLine().getStatusCode()) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Delete index fail : " + index);
+                }
+                return false;
+            }
+        } catch (Exception e) {
+            log.error("Delete index fail, exception occurred.", e);
+        }
+        return false;
+    }
+
     @Override
     public void close() throws IOException {
         restClient.close();

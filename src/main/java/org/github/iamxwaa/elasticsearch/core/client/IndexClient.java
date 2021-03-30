@@ -27,4 +27,22 @@ public interface IndexClient {
      * @return 是否存在
      */
     boolean isIndexExist(String index);
+
+    /**
+     * 创建索引
+     * 
+     * @param index    索引名称
+     * @param shards   分片个数
+     * @param replicas 副本个数
+     * @return
+     */
+    boolean createIndex(String index, int shards, int replicas);
+
+    /**
+     * 删除索引
+     * 
+     * @param index 索引名称
+     * @return
+     */
+    boolean deleteIndex(String index);
 }
