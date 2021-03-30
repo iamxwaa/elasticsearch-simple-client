@@ -258,7 +258,15 @@ public class DefaultEsClientImpl extends EsClient {
                 result.setTotal(0);
                 result.setHits(new SearchHit[0]);
             } else {
-                result.setTotal(hitObj.getLongValue("total"));
+                Object totalObj = hitObj.get("total");
+                if (totalObj instanceof JSONObject) {
+                    totalObj = ((JSONObject) totalObj).get("value");
+                }
+                if (totalObj instanceof Integer) {
+                    result.setTotal((Integer) totalObj);
+                } else {
+                    result.setTotal((Long) totalObj);
+                }
                 result.setHits(hits.parallelStream().map(hit -> {
                     JSONObject hit2 = (JSONObject) hit;
                     SearchHit searchHit = new SearchHit();
@@ -432,7 +440,7 @@ public class DefaultEsClientImpl extends EsClient {
         StringEntity entity = new StringEntity(bufferData.toString(), ContentType.APPLICATION_JSON);
         Response response = null;
         try {
-            response = restClient.performRequest(buildRequest(PUT, "/_bulk", entity));
+            response = restClient.performRequest(buildRequest(PUT, "/_bulk?filter_path=-items", entity));
             if (log.isDebugEnabled()) {
                 log.debug("Bulk response entity is : " + EntityUtils.toString(response.getEntity()));
             }
